@@ -6,7 +6,6 @@ const CreatePage = () => {
     <div>
       {" "}
       <Link href={"/"}>Go</Link>
-      <PostCard key={0} />
     </div>
   );
 };

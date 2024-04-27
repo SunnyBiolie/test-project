@@ -2,8 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import * as NextImage from "next/image";
-import Link from "next/link";
-import { ElementRef, memo, useEffect, useRef, useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { FaCommentDots } from "react-icons/fa";
 import { GoDotFill } from "react-icons/go";
 import { IoBookmark, IoHeart } from "react-icons/io5";
@@ -12,28 +11,25 @@ interface PostCardProps {
   imageSrc: string;
 }
 
-export const PostCard = memo(function PostCard() {
+export const PostCard = ({ imageSrc }: PostCardProps) => {
   const imageRef = useRef<ElementRef<"img">>(null);
 
   const [isImgLoading, setIsImgLoading] = useState<boolean>(true);
   const [intrinsicAR, setIntrinsicAR] = useState<any>(null);
 
   useEffect(() => {
-    if (imageRef.current) {
-      const image = new Image();
+    const image = new Image();
 
-      image.onload = () => {
-        if (image.naturalWidth / image.naturalHeight < 1) {
-          setIntrinsicAR(`${image.naturalWidth}/${image.naturalHeight}`);
-        } else setIntrinsicAR("1/1");
-        setIsImgLoading(false);
-      };
+    image.onload = () => {
+      if (image.naturalWidth / image.naturalHeight < 1) {
+        setIntrinsicAR(`${image.naturalWidth}/${image.naturalHeight}`);
+      } else setIntrinsicAR("1/1");
+      setIsImgLoading(false);
+    };
 
-      image.src =
-        "https://telegraph-image-bak.pages.dev/file/32a611706725087d0baf4.jpg";
-    }
+    image.src = imageSrc;
     console.log("eff");
-  });
+  }, [imageSrc]);
 
   console.log("rendering");
 
@@ -56,16 +52,14 @@ export const PostCard = memo(function PostCard() {
         >
           <NextImage.default
             ref={imageRef}
-            src={
-              "https://telegraph-image-bak.pages.dev/file/32a611706725087d0baf4.jpg"
-            }
+            src={imageSrc}
             alt=""
             className={cn("object-contain", isImgLoading && "hidden")}
             fill
             sizes="auto"
           />
         </div>
-        <div className="absolute left-full w-12 ml-2 flex flex-col items-center justify-center gap-y-4">
+        <div className="hidden absolute left-full w-12 ml-2 sm:flex flex-col items-center justify-center gap-y-4">
           <div className="flex flex-col items-center justify-center gap-y-2">
             <IoHeart className="size-7" />
             <span>2134</span>
@@ -74,12 +68,11 @@ export const PostCard = memo(function PostCard() {
           <IoBookmark className="size-7" />
         </div>
       </div>
-      <div>
+      <div className="hidden sm:block">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ut
         est nec magna semper varius eget sit amet ex. Donec sed auctor nibh.
         Nulla hendrerit iaculis nulla id aliquam.
       </div>
-      <Link href={"/create"}>Create</Link>
     </div>
   );
-});
+};
