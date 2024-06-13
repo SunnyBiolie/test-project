@@ -115,7 +115,7 @@ export const MainNavBar = ({ className }: MainNavBarProps) => {
       </div>
       <div className="flex-1 w-full flex flex-col items-center py-3">
         <nav className="flex-1 relative w-12 lg:w-full">
-          <div className="absolute w-full z-10">
+          <div className="absolute w-full z-10 space-y-2">
             {navbarItem.map((item, index) => (
               <NavItem
                 key={index}
@@ -131,7 +131,7 @@ export const MainNavBar = ({ className }: MainNavBarProps) => {
           </div>
           {activeBGPosition && (
             <div
-              className="hidden lg:block absolute w-full h-12 rounded-lg bg-neutral-800 dark:bg-neutral-600/40 transition-all duration-300 z-0"
+              className="hidden lg:block absolute w-full h-12 rounded-lg bg-neutral-300/30 dark:bg-neutral-600/25 transition-all duration-300 z-0"
               style={{ top: `${activeBGPosition}px` }}
             />
           )}
@@ -141,8 +141,8 @@ export const MainNavBar = ({ className }: MainNavBarProps) => {
           className={cn(
             "group w-12 lg:w-full h-12 lg:h-14 flex items-center justify-center lg:justify-start gap-x-3 lg:px-3 my-3 rounded-full lg:rounded-lg",
             isInProfile
-              ? "bg-neutral-800 dark:bg-neutral-600/40 lg:text-white lg:dark:text-accent-foreground"
-              : "lg:hover:bg-neutral-300/40 lg:hover:dark:bg-neutral-600/40"
+              ? "bg-neutral-800 dark:bg-neutral-600/25 lg:text-white lg:dark:text-accent-foreground"
+              : "lg:hover:bg-neutral-300/30 lg:hover:dark:bg-neutral-600/25"
           )}
         >
           <div

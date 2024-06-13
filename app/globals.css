@@ -47,6 +47,13 @@ body {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
 
+    --dark-1: #06141b;
+    --dark-2: #11212d;
+    --dark-3: #253745;
+    --light-1: #ccd0cf;
+    --light-2: #9ba8ab;
+    --light-3: #4a5c6a;
+
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
 
@@ -109,6 +116,6 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-dark_1 text-light_1;
   }
 }

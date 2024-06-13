@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "@fontsource-variable/montserrat";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { MainNavBar } from "@/components/main-navbar";
 
 export const metadata: Metadata = {
   title: {
