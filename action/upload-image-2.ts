@@ -1,8 +1,9 @@
 "use server";
 
+import prisma from "@/lib/prisma";
 import ImageKit from "imagekit";
 
-export const uploadImage = async (datas: Uint8Array[]) => {
+export const uploadImages = async (datas: Uint8Array[]) => {
   let imageKit = new ImageKit({
     publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY!,
     privateKey: process.env.NEXT_PUBLIC_IMAGEKIT_PRIVATE_KEY!,
@@ -16,15 +17,25 @@ export const uploadImage = async (datas: Uint8Array[]) => {
     imageKit.upload(
       {
         file: buffer,
-        fileName: "file.jpeg",
-        folder: "test",
+        fileName: "danh danh",
+        folder: "photograms",
       },
-      function (err, res) {
+      async function (err, res) {
         if (err) console.log(err);
-        else result.push(res);
+        else {
+          console.log(res);
+          result.push(res);
+          if (res) {
+            const post = await prisma.post.create({
+              data: {
+                imageUrl: res.url,
+                authorId: "clxiohm7c000013pyw6zu4tx9",
+              },
+            });
+          }
+          return result;
+        }
       }
     );
   });
-
-  return result;
 };

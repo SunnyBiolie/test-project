@@ -1,6 +1,8 @@
+import { IconType } from "react-icons";
+
 interface CreatePostHeaderProps {
   tilte: string;
-  leftBtn: string;
+  LeftBtn: string | IconType;
   handleLeftBtn: () => void;
   rightBtn: string;
   handleRightBtn: () => void;
@@ -8,7 +10,7 @@ interface CreatePostHeaderProps {
 
 export const CreatePostHeader = ({
   tilte,
-  leftBtn,
+  LeftBtn,
   handleLeftBtn,
   rightBtn,
   handleRightBtn,
@@ -16,11 +18,15 @@ export const CreatePostHeader = ({
   return (
     <div className="relative flex items-center justify-center py-2.5 font-medium bg-slate-800">
       <h3>{tilte}</h3>
-      <div className="absolute size-full top-0 left-0 flex items-center justify-between px-4 text-sm">
-        <button className="cursor-pointer" onClick={handleLeftBtn}>
-          {leftBtn}
+      <div className="absolute size-full top-0 left-0 flex items-center justify-between px-2 text-sm">
+        <button className="cursor-pointer py-1 px-2" onClick={handleLeftBtn}>
+          {typeof LeftBtn === "string" ? (
+            LeftBtn
+          ) : (
+            <LeftBtn className="size-6" />
+          )}
         </button>
-        <button className="cursor-pointer" onClick={handleRightBtn}>
+        <button className="cursor-pointer py-1 px-2" onClick={handleRightBtn}>
           {rightBtn}
         </button>
       </div>

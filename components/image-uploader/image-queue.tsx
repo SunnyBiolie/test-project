@@ -4,61 +4,84 @@ import { useCreateNewPost } from "@/hooks/use-create-new-post";
 import { GoPlus } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
 import { IUConfigValues } from "./create-new-post";
-// import validQuantityImageFiles from "./valid-quantity-images";
+import { cn } from "@/lib/utils";
 
 export const ImageQueue = () => {
-  const { files, setFiles, currentIndex, setCurrentIndex, arrImgPreCropData } =
-    useCreateNewPost();
+  const {
+    imageFiles,
+    setImageFiles,
+    currentIndex,
+    setCurrentIndex,
+    arrImgPreCropData,
+  } = useCreateNewPost();
 
   const inputRef = useRef<ElementRef<"input">>(null);
 
   useEffect(() => {
-    const target = inputRef.current;
-    if (target && files) {
-      target.onchange = () => {
-        if (target.files) {
-          const newImageFiles = Array.from(target.files);
-          if (files.length === IUConfigValues.maxImageFiles) {
-            console.warn(
-              `Đã có đủ tối đa ${IUConfigValues.maxImageFiles} hình ảnh cho bài viết.`
-            );
-            return;
+    const inputTarget = inputRef.current;
+    if (inputTarget && imageFiles) {
+      inputTarget.onchange = () => {
+        if (inputTarget.files && inputTarget.files.length > 0) {
+          const files = Array.from(inputTarget.files);
+          if (imageFiles.length === IUConfigValues.maxImageFiles) return;
+          if (imageFiles.length + files.length > IUConfigValues.maxImageFiles) {
+            return console.error("Giới hạn 6 file");
           }
-          if (
-            files.length + newImageFiles.length >
-            IUConfigValues.maxImageFiles
-          ) {
-            return;
-          } else {
-            setFiles([...files, ...newImageFiles]);
-            // // Set currentIndex bằng với phần tử đầu tiên được thêm
-            setCurrentIndex(files.length);
+
+          let isExistsFile = false;
+          files.forEach((newfile) => {
+            imageFiles.forEach((existsFileData) => {
+              if (newfile.name === existsFileData.file.name)
+                return (isExistsFile = true);
+            });
+          });
+
+          if (isExistsFile) {
+            return console.error("File(s) already exists");
           }
+
+          const newImageFiles = files.map((file) => {
+            const id = crypto.randomUUID();
+            return {
+              id,
+              file,
+            };
+          });
+          setImageFiles([...imageFiles, ...newImageFiles]);
+          // Set currentIndex bằng với phần tử đầu tiên được thêm
+          setCurrentIndex(imageFiles.length);
         }
       };
 
       return () => {
-        target.onchange = null;
+        inputTarget.onchange = null;
       };
     }
-    // Nếu không chạy lại mỗi khi files thay đổi thì files trong useEffect sẽ không bao giờ được cập nhật
+    // Nếu không chạy lại mỗi khi imageFiles thay đổi thì imageFiles trong useEffect sẽ không bao giờ được cập nhật
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files]);
+  }, [imageFiles]);
+
+  useEffect(() => {}, [currentIndex]);
+
+  if (!imageFiles || !arrImgPreCropData) return;
 
   const hanldeAddImage = () => {
-    const target = inputRef.current;
-    if (target && files?.length !== IUConfigValues.maxImageFiles) {
-      target.click();
+    const inputTarget = inputRef.current;
+    if (!inputTarget) return;
+    if (imageFiles.length < IUConfigValues.maxImageFiles) {
+      inputTarget.click();
+    } else {
+      console.warn(
+        `Đã có đủ tối đa ${IUConfigValues.maxImageFiles} hình ảnh cho bài viết.`
+      );
     }
   };
-
-  if (!arrImgPreCropData) return;
 
   return (
     <>
       <input ref={inputRef} type="file" accept="image/*" multiple hidden />
       <div className="flex items-center gap-4">
-        <div className="w-full h-[72px] flex items-center gap-2">
+        {/* <div className="w-full h-[72px] flex items-center gap-2">
           <ImageQueueItem
             index={
               currentIndex === 0
@@ -86,6 +109,16 @@ export const ImageQueue = () => {
                 : currentIndex + 1
             }
           />
+        </div> */}
+        <div className="relative w-full h-[72px] overflow-hidden">
+          <div
+            className="h-full absolute flex items-center gap-x-2.5 transition-all"
+            style={{ left: `-${(currentIndex - 1) * 58}px` }}
+          >
+            {arrImgPreCropData.map((imgData, index) => (
+              <ImageQueueItem key={index} index={index} />
+            ))}
+          </div>
         </div>
         <div className="relative w-12 h-full flex items-center justify-center">
           <div
@@ -105,53 +138,56 @@ interface ImageQueueItemProps {
 }
 
 const ImageQueueItem = ({ index }: ImageQueueItemProps) => {
-  const { files, setFiles, currentIndex, setCurrentIndex, arrImgPreCropData } =
-    useCreateNewPost();
+  const {
+    setState,
+    imageFiles,
+    setImageFiles,
+    currentIndex,
+    setCurrentIndex,
+    arrImgPreCropData,
+  } = useCreateNewPost();
 
   const handleRemoveImage = () => {
-    if (!files) return;
-    if (currentIndex === files.length - 1)
+    if (!imageFiles) return;
+    if (currentIndex === imageFiles.length - 1)
       setCurrentIndex((prev) => Math.max(0, prev - 1));
-    if (files.length === 1) {
-      setFiles(undefined);
+    if (imageFiles.length === 1) {
+      setState("se");
+      setImageFiles(undefined);
     } else
-      setFiles((prev) => {
+      setImageFiles((prev) => {
         return prev!.toSpliced(currentIndex, 1);
       });
   };
 
   if (!arrImgPreCropData) return;
+  const imgPreCropData = arrImgPreCropData[index];
 
   return (
     <>
-      {index === currentIndex ? (
-        <div className="relative size-12 mx-3 scale-150 bg-dark_3 rounded-sm overflow-hidden transition-all">
-          <Image
-            src={arrImgPreCropData[index]?.url || "/logo.png"}
-            alt=""
-            fill
-            className="object-cover"
-          />
-          <div
-            className="absolute top-[3px] right-[3px] p-[3px] rounded-full bg-neutral-800/75 cursor-pointer"
-            onClick={handleRemoveImage}
-          >
-            <IoClose className="size-3" />
+      {imgPreCropData &&
+        (index === currentIndex ? (
+          <div className="relative size-12 mx-3 scale-150 bg-dark_3 rounded-sm overflow-hidden transition-all">
+            <div
+              style={{ backgroundImage: `url("${imgPreCropData.originURL}")` }}
+              className="size-full bg-neutral-700/75 bg-cover bg-no-repeat bg-center"
+            />
+            <div
+              className="absolute top-[3px] right-[3px] p-[3px] rounded-full bg-neutral-800/75 cursor-pointer"
+              onClick={handleRemoveImage}
+            >
+              <IoClose className="size-3" />
+            </div>
           </div>
-        </div>
-      ) : (
-        arrImgPreCropData[index]?.url && (
+        ) : (
           <div className="relative size-12 bg-dark_3 rounded-sm overflow-hidden transition-all">
-            <Image
-              src={arrImgPreCropData[index].url || "/logo.png"}
-              alt=""
-              fill
-              className="object-cover"
+            <div
+              style={{ backgroundImage: `url("${imgPreCropData.originURL}")` }}
+              className="size-full bg-neutral-700/75 bg-cover bg-no-repeat bg-center"
             />
             <div className="absolute size-full top-0 left-0 bg-slate-700/50" />
           </div>
-        )
-      )}
+        ))}
     </>
   );
 };

@@ -1,10 +1,16 @@
+"use client";
+
+import { useState } from "react";
+import { createUser, createCategory, createPost } from "@/action/prisma";
+
 const SettingsPage = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   return (
-    <div className="size-full flex items-center justify-center -space-x-20">
-      <div className="bg-white size-40 mix-blend-multiply text-white">
-        TIENG ANH
-      </div>
-      <div className="mix-blend-multiply bg-black size-40 backdrop-grayscale"></div>
+    <div className="space-x-4">
+      <button onClick={() => createUser()}>Create user</button>
+      <button onClick={() => createCategory()}>Create Category</button>
+      <button onClick={() => createPost()}>Create Post</button>
     </div>
   );
 };

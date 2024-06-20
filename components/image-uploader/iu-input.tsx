@@ -6,7 +6,7 @@ import { IoImagesOutline } from "react-icons/io5";
 import { useCreateNewPost } from "@/hooks/use-create-new-post";
 
 export const ImageUploadInput = () => {
-  const { files, setFiles } = useCreateNewPost();
+  const { imageFiles, setImageFiles } = useCreateNewPost();
 
   const inputFileRef = useRef<ElementRef<"input">>(null);
   const selectImageRef = useRef<ElementRef<"button">>(null);
@@ -21,10 +21,17 @@ export const ImageUploadInput = () => {
         inputFileTarget.click();
       };
       inputFileTarget.onchange = () => {
-        if (inputFileTarget.files && !files) {
-          const newImageFiles = Array.from(inputFileTarget.files);
-          if (newImageFiles.length > IUConfigValues.maxImageFiles) return;
-          setFiles(newImageFiles);
+        if (inputFileTarget.files && !imageFiles) {
+          const files = Array.from(inputFileTarget.files);
+          if (files.length > IUConfigValues.maxImageFiles) return;
+          const newImageFiles = files.map((file) => {
+            const id = crypto.randomUUID();
+            return {
+              id,
+              file,
+            };
+          });
+          setImageFiles(newImageFiles);
         }
       };
 
@@ -43,10 +50,17 @@ export const ImageUploadInput = () => {
         dropZoneTarget.classList.add("border-dark_3");
         dropZoneTarget.classList.remove("border-light_3");
         const fileList = e.dataTransfer?.files;
-        if (fileList && !files) {
-          const newImageFiles = Array.from(fileList);
-          if (newImageFiles.length > IUConfigValues.maxImageFiles) return;
-          setFiles(newImageFiles);
+        if (fileList && !imageFiles) {
+          const files = Array.from(fileList);
+          if (files.length > IUConfigValues.maxImageFiles) return;
+          const newImageFiles = files.map((file) => {
+            const id = crypto.randomUUID();
+            return {
+              id,
+              file,
+            };
+          });
+          setImageFiles(newImageFiles);
         }
       };
 

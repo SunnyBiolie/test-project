@@ -11,5 +11,11 @@ export const calPercSizeAndPos = (
   const perCropTop = perCropHeight === 1 ? 0 : 0.5 - perCropHeight / 2;
   const perCropLeft = perCropWidth === 1 ? 0 : 0.5 - perCropWidth / 2;
 
-  return { perCropHeight, perCropWidth, perCropTop, perCropLeft };
+  return {
+    perCropSize: [perCropWidth, perCropHeight],
+    perCropPos: [perCropTop, perCropLeft],
+  } as {
+    perCropSize: [number, number];
+    perCropPos: [number, number];
+  };
 };

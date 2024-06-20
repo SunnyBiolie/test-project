@@ -27,7 +27,7 @@ export const ButtonChangeImage = ({
   return (
     <div
       className={cn(
-        "absolute top-1/2 -translate-y-1/2 bg-neutral-800/75 rounded-full size-8 flex items-center justify-center cursor-pointer hover:bg-neutral-800/50 transition-all",
+        "absolute top-1/2 -translate-y-1/2 bg-neutral-950/60 rounded-full size-8 flex items-center justify-center cursor-pointer hover:bg-neutral-950/75 transition-all",
         action === "prev" ? "left-3" : "right-3"
       )}
       onClick={() => handleChangeImage(action)}

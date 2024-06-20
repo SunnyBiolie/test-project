@@ -1,72 +1,72 @@
 "use client";
 
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { ButtonChangeImage } from "./btn-change-image";
 import { useCreateNewPost } from "@/hooks/use-create-new-post";
-import { ElementRef, useEffect, useRef } from "react";
+import { Loading } from "../loading";
 
 export const ImageUploadPreview = () => {
   const {
-    direction,
-    aspectRatio,
+    imageFiles,
+    arrImgPreCropData,
     currentIndex,
     setCurrentIndex,
-    arrImgPreCropData,
-    arrImgCroppedData,
+    direction,
+    aspectRatio,
   } = useCreateNewPost();
 
-  const cropContainerRef = useRef<ElementRef<"div">>(null);
+  // useEffect(() => {
+  //   const target = cropContainerRef.current;
+  //   if (target) {
+  //     if (target.classList.contains("animate-fade-in")) {
+  //       target.classList.remove("animate-fade-in");
+  //       void target.offsetHeight;
+  //     }
 
-  useEffect(() => {
-    const target = cropContainerRef.current;
-    if (target) {
-      if (target.classList.contains("animate-fade-in")) {
-        target.classList.remove("animate-fade-in");
-        void target.offsetHeight;
-      }
+  //     target.classList.add("animate-fade-in");
+  //     target.addEventListener(
+  //       "animationend",
+  //       () => {
+  //         target.classList.remove("animate-fade-in");
+  //       },
+  //       { once: true }
+  //     );
+  //   }
+  // }, [currentIndex]);
 
-      target.classList.add("animate-fade-in");
-      target.addEventListener(
-        "animationend",
-        () => {
-          target.classList.remove("animate-fade-in");
-        },
-        { once: true }
-      );
-    }
-  }, [currentIndex]);
+  if (!imageFiles || !arrImgPreCropData) return;
 
-  if (!arrImgPreCropData) return;
-  const currImage = arrImgPreCropData[currentIndex];
+  const currImgPreCropData = arrImgPreCropData[currentIndex];
 
   return (
-    <div className="relative size-[475px] flex items-center justify-center bg-neutral-950/40 overflow-hidden">
+    <div className="relative size-[475px] shrink-0 flex items-center justify-center bg-slate-950/40 overflow-hidden">
       <div
-        ref={cropContainerRef}
         className={cn(
-          "relative transition-all flex flex-col items-center justify-center",
+          "relative transition-all duration-300 ease-out",
           direction === "vertical" ? "h-full" : "w-full"
         )}
         style={{ aspectRatio: aspectRatio }}
       >
-        <div
-          className={cn(
-            "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-            aspectRatio < arrImgPreCropData[currentIndex].intrinsicAR
-              ? "h-full"
-              : "w-full"
-          )}
-          style={{ aspectRatio: arrImgPreCropData[currentIndex].intrinsicAR }}
-        >
-          <Image
-            src={currImage?.url || "/logo.png"}
-            alt=""
-            fill
-            className="object-cover"
+        {currImgPreCropData ? (
+          <div
+            style={{
+              backgroundImage: `url(${currImgPreCropData.originURL})`,
+              backgroundPositionX: `${
+                (currImgPreCropData.perCropPos[1] /
+                  (1 - currImgPreCropData.perCropSize[0])) *
+                100
+              }%`,
+              backgroundPositionY: `${
+                (currImgPreCropData.perCropPos[0] /
+                  (1 - currImgPreCropData.perCropSize[1])) *
+                100
+              }%`,
+            }}
+            className="size-full bg-cover bg-no-repeat"
           />
-        </div>
-        {/* <div className="absolute size-full top-0 left-0 border-2 border-sky-500"></div> */}
+        ) : (
+          <Loading />
+        )}
       </div>
       {arrImgPreCropData.length > 1 && (
         <>
@@ -76,7 +76,7 @@ export const ImageUploadPreview = () => {
                 key={index}
                 className={cn(
                   "size-2 rounded-full",
-                  index === currentIndex ? "bg-sky-400" : "bg-neutral-400"
+                  index === currentIndex ? "bg-sky-500" : "bg-sky-100/75"
                 )}
               ></div>
             ))}

@@ -4,9 +4,10 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { LuRectangleHorizontal, LuRectangleVertical } from "react-icons/lu";
 import { useCreateNewPost } from "@/hooks/use-create-new-post";
-import { uploadImage } from "@/action/upload-image-2";
 import { ImageQueue } from "./image-queue";
 import { AspectRatio } from "@/types/create-post-type";
+import { calPercSizeAndPos } from "./utils";
+import { CiCrop } from "react-icons/ci";
 
 const vertical: AspectRatio[] = [0.5625, 0.6666666666666667, 0.75, 0.8, 1];
 const verticalDisplay = ["9:16", "2:3", "3:4", "4:5", "1:1"];
@@ -24,27 +25,59 @@ export const ImageUploadParameters = () => {
     setAspectRatio,
 
     arrImgPreCropData,
+    setArrImgPreCropData,
   } = useCreateNewPost();
 
-  const [arIndex, setArIndex] = useState<number>(0);
+  const [arIndex, setARIndex] = useState<number>(
+    vertical.indexOf(aspectRatio) !== -1
+      ? vertical.indexOf(aspectRatio)
+      : horizontal.indexOf(aspectRatio)
+  );
 
   if (!arrImgPreCropData) return;
 
   const handleSelectDirection = (
-    direction: "vertical" | "horizontal",
+    newDirection: "vertical" | "horizontal",
     ar: AspectRatio
   ) => {
-    setDirection(direction);
+    if (direction === newDirection) return;
+
+    handleSelectAR(ar, arIndex);
+    setDirection(newDirection);
     setAspectRatio(ar);
   };
 
-  const handleSelectAR = (item: AspectRatio, index: number) => {
-    setAspectRatio(item);
-    setArIndex(index);
+  const handleSelectAR = (newAspectRatio: AspectRatio, index: number) => {
+    if (aspectRatio === newAspectRatio) return;
+
+    setARIndex(index);
+    setAspectRatio(newAspectRatio);
+    if (!arrImgPreCropData) return;
+
+    // Reset perCropSize and perCropPos for cropper display in the middle-center
+    setArrImgPreCropData((prev) => {
+      if (prev) {
+        prev.forEach((item, index) => {
+          const { perCropSize, perCropPos } = calPercSizeAndPos(
+            item.intrinsicAR,
+            newAspectRatio
+          );
+          prev[index] = {
+            id: prev[index].id,
+            originURL: item.originURL,
+            intrinsicAR: item.intrinsicAR,
+            perCropSize,
+            perCropPos,
+          };
+        });
+      }
+
+      return prev;
+    });
   };
 
   return (
-    <div className="size-full p-4 text-sm font-medium space-y-3">
+    <div className="flex-1 bg-dark_2 p-4 text-sm font-medium space-y-3 overflow-hidden">
       <div className="space-y-1.5">
         <p>Direction</p>
         <div className="w-fit bg-dark_3 p-1 rounded-md flex items-center gap-x-1">
@@ -104,12 +137,15 @@ export const ImageUploadParameters = () => {
         <p>Photos</p>
         <ImageQueue />
       </div>
-      <button
-        className="p-2 rounded-sm bg-sky-700"
-        onClick={() => setState("cr")}
-      >
-        Advanced Cropping
-      </button>
+      <div className="space-y-1.5">
+        <p>Select crop position</p>
+        <button
+          className="p-2 rounded-sm bg-dark_3 hover:bg-light_3 transition"
+          onClick={() => setState("cr")}
+        >
+          <CiCrop className="size-6" />
+        </button>
+      </div>
     </div>
   );
 };

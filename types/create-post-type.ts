@@ -1,3 +1,21 @@
+export type ImageFile = {
+  id: string;
+  file: File;
+};
+
+export type ImgPreCropData = {
+  id: string;
+  originURL: string;
+  intrinsicAR: number;
+  perCropSize: [number, number]; // [width, height]
+  perCropPos: [number, number]; // [top, left]
+};
+
+export type ImgCroppedData = {
+  bytes: Uint8Array;
+  croppedURL: string;
+};
+
 // ["select images", "set aspect ratio", "cropping image", "more info: title, description"]
 export type CreatePostState = "se" | "ar" | "cr" | "in";
 
@@ -14,27 +32,3 @@ export type AspectRatio =
   | 1.3333333333333333
   | 1.5
   | 1.7777777777777778;
-
-export type ImgPreCropData = {
-  url: string;
-  intrinsicAR: number;
-  perCropWidth: number;
-  perCropHeight: number;
-  perCropTop: number;
-  perCropLeft: number;
-};
-
-export type ImgCroppedData = {
-  bytes: Uint8Array;
-  url: string;
-};
-
-export type ImageData = {
-  originURL: string;
-  intrinsicAR: number;
-  perCropSize: [number, number]; // [width, height]
-  perCropPos: [number, number]; // [top, left]
-  bytes: Uint8Array;
-  croppedURL: string;
-  display: "origin" | "cropped";
-};

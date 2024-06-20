@@ -4,15 +4,17 @@ import {
   ImgCroppedData,
   ImgPreCropData,
 } from "@/types/create-post-type";
+import { Dispatch, SetStateAction } from "react";
 
-export default function setArrayImageData(
+export default function createArrayCroppedImage(
   arrImgPreCrop: ImgPreCropData[],
+  setArrCroppedImgData: Dispatch<SetStateAction<ImgCroppedData[] | undefined>>,
   direction?: Direction,
   aspectRatio?: AspectRatio
 ) {
   let result: ImgCroppedData[] = [];
 
-  arrImgPreCrop.forEach((item) => {
+  arrImgPreCrop.forEach((item, index) => {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement("canvas");
@@ -20,8 +22,8 @@ export default function setArrayImageData(
       let cropWidth = 0;
       let x = 0;
       let y = 0;
-      cropHeight = img.naturalHeight * item.perCropHeight;
-      cropWidth = img.naturalWidth * item.perCropWidth;
+      cropHeight = img.naturalHeight * item.perCropSize[1];
+      cropWidth = img.naturalWidth * item.perCropSize[0];
       // if (direction === "vertical") {
       //   cropHeight = img.naturalHeight;
       //   switch (aspectRatio) {
@@ -80,8 +82,8 @@ export default function setArrayImageData(
       canvas.height = cropHeight;
       canvas.width = cropWidth;
 
-      x = img.naturalWidth * item.perCropLeft;
-      y = img.naturalHeight * item.perCropTop;
+      x = img.naturalWidth * item.perCropPos[1];
+      y = img.naturalHeight * item.perCropPos[0];
       // x = img.naturalWidth / 2 - cropWidth / 2;
       // y = img.naturalHeight / 2 - cropHeight / 2;
 
@@ -108,15 +110,84 @@ export default function setArrayImageData(
         bytes[i] = binaryString.charCodeAt(i);
       }
 
-      const url = URL.createObjectURL(
-        new Blob([bytes.buffer], { type: "image/jpeg}" })
+      const croppedURL = URL.createObjectURL(
+        new Blob([bytes.buffer], { type: "image/jpeg" })
       );
 
-      result.push({ bytes, url });
+      result[index] = { bytes, croppedURL };
+      if (result.length === arrImgPreCrop.length) {
+        setArrCroppedImgData(result);
+      }
     };
-
-    img.src = item.url;
+    img.src = item.originURL;
   });
-
-  return result;
 }
+
+// export default async function setArrayImageData(
+//   arrImgPreCrop: ImgPreCropData[],
+//   direction?: Direction,
+//   aspectRatio?: AspectRatio
+// ) {
+//   let result: ImgCroppedData[] = [];
+
+//   arrImgPreCrop.forEach(async (item) => {
+//     const img = (await loadImage(item.originURL)) as HTMLImageElement;
+//     const canvas = document.createElement("canvas");
+//     let cropHeight = 0;
+//     let cropWidth = 0;
+//     let x = 0;
+//     let y = 0;
+//     cropHeight = img.naturalHeight * item.perCropSize[1];
+//     cropWidth = img.naturalWidth * item.perCropSize[0];
+
+//     canvas.height = cropHeight;
+//     canvas.width = cropWidth;
+
+//     x = img.naturalWidth * item.perCropPos[1];
+//     y = img.naturalHeight * item.perCropPos[0];
+
+//     const ctx = canvas.getContext("2d");
+//     ctx?.drawImage(
+//       img,
+//       x,
+//       y,
+//       cropWidth,
+//       cropHeight,
+//       0,
+//       0,
+//       cropWidth,
+//       cropHeight
+//     );
+//     // Chọn type là jpg/jpge và chất lượng nén là 80% để giảm kích thước
+//     const dataURL = canvas.toDataURL("image/jpeg", 0.8);
+//     const base64Data = dataURL.split(",")[1];
+//     const binaryString = atob(base64Data);
+//     const length = binaryString.length;
+//     // Chuyển dữ liệu từ base64 sang Uint8Array --> giảm kích thước dữ liệu (?)
+//     const bytes = new Uint8Array(length);
+//     for (let i = 0; i < length; i++) {
+//       bytes[i] = binaryString.charCodeAt(i);
+//     }
+
+//     const croppedURL = URL.createObjectURL(
+//       new Blob([bytes.buffer], { type: "image/jpeg}" })
+//     );
+
+//     result.push({ bytes, croppedURL });
+//   });
+
+//   return result;
+// }
+
+// const loadImage = (url: string) => {
+//   return new Promise((resolve, reject) => {
+//     const img = new Image();
+//     img.onload = () => {
+//       resolve(img);
+//     };
+//     img.onerror = (e) => {
+//       reject(e);
+//     };
+//     img.src = url;
+//   });
+// };
