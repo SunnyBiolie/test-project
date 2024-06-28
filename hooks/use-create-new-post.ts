@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { CreateNewPostContext } from "@/components/image-uploader/create-new-post";
+import { CreatePostContainerContext } from "@/components/create-new-post/create-post-container";
 
 export const useCreateNewPost = () => {
-  const context = useContext(CreateNewPostContext);
+  const context = useContext(CreatePostContainerContext);
   if (context === undefined) {
     throw new Error(
       "useCreateNewPost must be used with CreateNewPostContext.Provider"

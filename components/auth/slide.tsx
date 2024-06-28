@@ -34,15 +34,13 @@ export const AuthSlide = forwardRef(function AuthSlide(
 
       image.src = slide.url.origin;
     }
-
-    console.log("origin change");
   }, [slide.url.origin]);
 
   return (
     <div
       ref={ref}
       className={cn(
-        "fixed size-full transition-[opacity] [transition-duration:1500ms]",
+        "fixed size-full transition-[opacity] [transition-duration:1200ms]",
         className
       )}
     >

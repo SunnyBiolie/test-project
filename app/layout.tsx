@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@fontsource-variable/montserrat";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: {
@@ -26,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
+        <Toaster richColors position="top-right" />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

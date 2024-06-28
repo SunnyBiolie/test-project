@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import { LuRectangleHorizontal, LuRectangleVertical } from "react-icons/lu";
 import { useCreateNewPost } from "@/hooks/use-create-new-post";
 import { ImageQueue } from "./image-queue";
-import { AspectRatio } from "@/types/create-post-type";
-import { calPercSizeAndPos } from "./utils";
+import { AspectRatio } from "@/types/create-post-types";
+import { defaultPercSizeAndPos } from "./utils";
 import { CiCrop } from "react-icons/ci";
 
 const vertical: AspectRatio[] = [0.5625, 0.6666666666666667, 0.75, 0.8, 1];
@@ -16,16 +16,15 @@ const horizontal: AspectRatio[] = [
 ];
 const horizontalDisplay = ["16:9", "3:2", "4:3", "5:4", "1:1"];
 
-export const ImageUploadParameters = () => {
+export const CropParameters = () => {
   const {
     setState,
+    arrImgPreCropData,
+    setArrImgPreCropData,
     direction,
     setDirection,
     aspectRatio,
     setAspectRatio,
-
-    arrImgPreCropData,
-    setArrImgPreCropData,
   } = useCreateNewPost();
 
   const [arIndex, setARIndex] = useState<number>(
@@ -58,7 +57,7 @@ export const ImageUploadParameters = () => {
     setArrImgPreCropData((prev) => {
       if (prev) {
         prev.forEach((item, index) => {
-          const { perCropSize, perCropPos } = calPercSizeAndPos(
+          const { perCropSize, perCropPos } = defaultPercSizeAndPos(
             item.intrinsicAR,
             newAspectRatio
           );
@@ -77,8 +76,8 @@ export const ImageUploadParameters = () => {
   };
 
   return (
-    <div className="flex-1 bg-dark_2 p-4 text-sm font-medium space-y-3 overflow-hidden">
-      <div className="space-y-1.5">
+    <div className="flex-1 w-[285px] bg-dark_2 p-4 text-sm font-medium space-y-3 overflow-hidden">
+      <section className="space-y-1.5">
         <p>Direction</p>
         <div className="w-fit bg-dark_3 p-1 rounded-md flex items-center gap-x-1">
           <div
@@ -102,9 +101,9 @@ export const ImageUploadParameters = () => {
             <LuRectangleHorizontal className="size-5" />
           </div>
         </div>
-      </div>
-      <div className="space-y-1.5">
-        <p>Aspect Ratio</p>
+      </section>
+      <section className="space-y-1.5">
+        <p>Aspect ratio</p>
         <div className="w-fit bg-dark_3 p-1 rounded-md flex items-center gap-x-1">
           {direction === "vertical"
             ? vertical.map((item, index) => (
@@ -132,20 +131,20 @@ export const ImageUploadParameters = () => {
                 </div>
               ))}
         </div>
-      </div>
-      <div className="space-y-1.5">
+      </section>
+      <section className="space-y-1.5">
         <p>Photos</p>
         <ImageQueue />
-      </div>
-      <div className="space-y-1.5">
-        <p>Select crop position</p>
+      </section>
+      <section className="space-y-1.5">
+        <p>Crop in more detail</p>
         <button
           className="p-2 rounded-sm bg-dark_3 hover:bg-light_3 transition"
           onClick={() => setState("cr")}
         >
           <CiCrop className="size-6" />
         </button>
-      </div>
+      </section>
     </div>
   );
 };

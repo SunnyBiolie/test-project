@@ -13,9 +13,13 @@ export const AuthSlider = ({ slides }: AuthSliderProps) => {
   const firstSlideRef = useRef<ElementRef<"div">>(null);
   const lastSlideRef = useRef<ElementRef<"div">>(null);
 
-  const [firstSlideIndex, setFirstSlideIndex] = useState<number>(1);
-  const [lastSlideIndex, setLastSlideIndex] = useState<number>(0);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const startIndex = 0;
+
+  const [firstSlideIndex, setFirstSlideIndex] = useState<number>(
+    startIndex === slides.length - 1 ? 0 : startIndex + 1
+  );
+  const [lastSlideIndex, setLastSlideIndex] = useState<number>(startIndex);
+  const [currentIndex, setCurrentIndex] = useState<number>(startIndex);
   const [activeSlide, setActiveSlide] = useState<"first" | "last">("last");
 
   useEffect(() => {
@@ -32,7 +36,8 @@ export const AuthSlider = ({ slides }: AuthSliderProps) => {
         if (lastSlideRef.current && firstSlideRef.current) {
           lastSlideRef.current.style.opacity = "0";
 
-          await new Promise((r) => setTimeout(r, 1500));
+          // Duration của opacity được set bằng với thời gian của timeout bên dưới
+          await new Promise((r) => setTimeout(r, 1200));
 
           lastSlideRef.current.style.zIndex = "0";
           firstSlideRef.current.style.zIndex = "1";
@@ -50,7 +55,7 @@ export const AuthSlider = ({ slides }: AuthSliderProps) => {
         if (firstSlideRef.current && lastSlideRef.current) {
           firstSlideRef.current.style.opacity = "0";
 
-          await new Promise((r) => setTimeout(r, 1500));
+          await new Promise((r) => setTimeout(r, 1200));
 
           firstSlideRef.current.style.zIndex = "0";
           lastSlideRef.current.style.zIndex = "1";
@@ -71,7 +76,7 @@ export const AuthSlider = ({ slides }: AuthSliderProps) => {
 
     const timeOut = setTimeout(() => {
       updateBackground(currentIndex);
-    }, 6000);
+    }, 4500);
 
     return () => {
       clearTimeout(timeOut);

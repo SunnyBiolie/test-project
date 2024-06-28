@@ -12,19 +12,32 @@ export type AuthBackgroundItem = {
 };
 
 export const AuthBackgrounds: AuthBackgroundItem[] = [
+  // {
+  //   author: {
+  //     name: "Emil Widlund",
+  //     link: "https://unsplash.com/@emilwidlund",
+  //   },
+  //   origin:
+  //     "https://unsplash.com/photos/white-and-gray-wooden-apartment-houses-qWdei6yHNnA",
+  //   url: {
+  //     origin:
+  //       "https://telegraph-image-bak.pages.dev/file/ee5c2878cf301e5cb7db1.jpg",
+  //     large:
+  //       "https://telegraph-image-bak.pages.dev/file/2fb22ed821c845d067d06.jpg",
+  //     tiny: "https://telegraph-image-bak.pages.dev/file/f9076a73b5a4a65573005.jpg",
+  //   },
+  // },
   {
     author: {
-      name: "Emil Widlund",
-      link: "https://unsplash.com/@emilwidlund",
+      name: "Paul Bill",
+      link: "https://unsplash.com/@hoffman11",
     },
     origin:
-      "https://unsplash.com/photos/white-and-gray-wooden-apartment-houses-qWdei6yHNnA",
+      "https://unsplash.com/photos/a-building-with-columns-and-a-clock-on-the-front-of-it-rEVqhe1mxxU",
     url: {
       origin:
-        "https://telegraph-image-bak.pages.dev/file/ee5c2878cf301e5cb7db1.jpg",
-      large:
-        "https://telegraph-image-bak.pages.dev/file/2fb22ed821c845d067d06.jpg",
-      tiny: "https://telegraph-image-bak.pages.dev/file/f9076a73b5a4a65573005.jpg",
+        "https://telegraph-image-bak.pages.dev/file/c8ee68c597c215d88eb44.jpg",
+      tiny: "https://telegraph-image-bak.pages.dev/file/175292f39946a7996c71c.jpg",
     },
   },
   {
@@ -42,15 +55,14 @@ export const AuthBackgrounds: AuthBackgroundItem[] = [
   },
   {
     author: {
-      name: "Christina Brinza",
-      link: "https://unsplash.com/@cbrin",
+      name: "Andrew De Leon",
+      link: "https://unsplash.com/@acfromspace",
     },
-    origin:
-      "https://unsplash.com/photos/a-small-black-and-white-bird-perched-on-a-tree-branch-LZ2FIsUxgFU",
+    origin: "https://unsplash.com/photos/tifa-from-overwatch--uWiIajRN0s",
     url: {
       origin:
-        "https://telegraph-image-bak.pages.dev/file/5f854b6a7b00df508893f.jpg",
-      tiny: "https://telegraph-image-bak.pages.dev/file/68a4e14da6e9e796ef474.jpg",
+        "https://telegraph-image-bak.pages.dev/file/d4ad62e15e0e752767963.jpg",
+      tiny: "https://telegraph-image-bak.pages.dev/file/d9c44d2df17bc3a0bd972.jpg",
     },
   },
   {
@@ -81,15 +93,14 @@ export const AuthBackgrounds: AuthBackgroundItem[] = [
   },
   {
     author: {
-      name: "HKTreks",
-      link: "https://unsplash.com/@hktreks",
+      name: "Gigi",
+      link: "https://unsplash.com/@ling_gigi",
     },
-    origin:
-      "https://unsplash.com/photos/foggy-mountain-during-daytime-ima2rtH8rr4",
+    origin: "https://unsplash.com/photos/the-great-wall-of-china-6aZBfbzx5Ms",
     url: {
       origin:
-        "https://telegraph-image-bak.pages.dev/file/c47eaae6fb467b28cfb24.jpg",
-      tiny: "https://telegraph-image-bak.pages.dev/file/121486488a3ed35940a27.jpg",
+        "https://telegraph-image-bak.pages.dev/file/113ab60d0d65bc31dd597.jpg",
+      tiny: "https://telegraph-image-bak.pages.dev/file/e226fbd079be77f3392ff.jpg",
     },
   },
   // {

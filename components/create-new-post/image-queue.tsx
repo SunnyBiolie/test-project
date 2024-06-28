@@ -1,10 +1,10 @@
 import { ElementRef, useEffect, useRef } from "react";
-import Image from "next/image";
+import { configValues } from "./create-post-container";
 import { useCreateNewPost } from "@/hooks/use-create-new-post";
 import { GoPlus } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
-import { IUConfigValues } from "./create-new-post";
-import { cn } from "@/lib/utils";
+import { checkNewImagesValid } from "./utils";
+import { toast } from "sonner";
 
 export const ImageQueue = () => {
   const {
@@ -23,24 +23,36 @@ export const ImageQueue = () => {
       inputTarget.onchange = () => {
         if (inputTarget.files && inputTarget.files.length > 0) {
           const files = Array.from(inputTarget.files);
-          if (imageFiles.length === IUConfigValues.maxImageFiles) return;
-          if (imageFiles.length + files.length > IUConfigValues.maxImageFiles) {
-            return console.error("Giới hạn 6 file");
+
+          const { validFiles, typeError, sizeError } = checkNewImagesValid(
+            files,
+            configValues.maxImageFiles - imageFiles.length,
+            configValues.limitSize
+          );
+
+          if (typeError || sizeError) {
+            if (typeError) {
+              toast.error("This file is not supported", {
+                description: `"${typeError}" could not be uploaded.`,
+              });
+            }
+
+            if (sizeError) {
+              toast.error("This file is too large", {
+                description: `"${sizeError}" is bigger than ${configValues.limitSize}MB and could not be uploaded.`,
+              });
+            }
+
+            // Reset input value
+            inputTarget.value = "";
+            if (inputTarget.value) {
+              inputTarget.type = "text";
+              inputTarget.type = "file";
+            }
+            return;
           }
 
-          let isExistsFile = false;
-          files.forEach((newfile) => {
-            imageFiles.forEach((existsFileData) => {
-              if (newfile.name === existsFileData.file.name)
-                return (isExistsFile = true);
-            });
-          });
-
-          if (isExistsFile) {
-            return console.error("File(s) already exists");
-          }
-
-          const newImageFiles = files.map((file) => {
+          const newImageFiles = validFiles.map((file) => {
             const id = crypto.randomUUID();
             return {
               id,
@@ -61,73 +73,57 @@ export const ImageQueue = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageFiles]);
 
-  useEffect(() => {}, [currentIndex]);
-
   if (!imageFiles || !arrImgPreCropData) return;
 
   const hanldeAddImage = () => {
     const inputTarget = inputRef.current;
     if (!inputTarget) return;
-    if (imageFiles.length < IUConfigValues.maxImageFiles) {
+    if (imageFiles.length < configValues.maxImageFiles) {
       inputTarget.click();
-    } else {
-      console.warn(
-        `Đã có đủ tối đa ${IUConfigValues.maxImageFiles} hình ảnh cho bài viết.`
-      );
     }
   };
 
   return (
     <>
-      <input ref={inputRef} type="file" accept="image/*" multiple hidden />
       <div className="flex items-center gap-4">
-        {/* <div className="w-full h-[72px] flex items-center gap-2">
-          <ImageQueueItem
-            index={
-              currentIndex === 0
-                ? currentIndex
-                : currentIndex === arrImgPreCropData.length - 1
-                ? currentIndex - 2
-                : currentIndex - 1
-            }
-          />
-          <ImageQueueItem
-            index={
-              currentIndex === 0
-                ? currentIndex + 1
-                : currentIndex === arrImgPreCropData.length - 1
-                ? currentIndex - 1
-                : currentIndex
-            }
-          />
-          <ImageQueueItem
-            index={
-              currentIndex === 0
-                ? currentIndex + 2
-                : currentIndex === arrImgPreCropData.length - 1
-                ? currentIndex
-                : currentIndex + 1
-            }
-          />
-        </div> */}
         <div className="relative w-full h-[72px] overflow-hidden">
           <div
             className="h-full absolute flex items-center gap-x-2.5 transition-all"
-            style={{ left: `-${(currentIndex - 1) * 58}px` }}
+            style={{
+              left: `-${
+                imageFiles.length === configValues.maxImageFiles
+                  ? currentIndex !== arrImgPreCropData.length - 1
+                    ? (currentIndex - 2) * 58 + "px"
+                    : (currentIndex - 3) * 58 + "px"
+                  : currentIndex !== arrImgPreCropData.length - 1
+                  ? (currentIndex - 1) * 58 + "px"
+                  : (currentIndex - 2) * 58 + "px"
+              }`,
+            }}
           >
             {arrImgPreCropData.map((imgData, index) => (
               <ImageQueueItem key={index} index={index} />
             ))}
           </div>
         </div>
-        <div className="relative w-12 h-full flex items-center justify-center">
-          <div
-            className="bg-dark_3 rounded-full overflow-hidden cursor-pointer hover:bg-light_3"
-            onClick={hanldeAddImage}
-          >
-            <GoPlus className="size-7 m-2.5" />
+        {imageFiles.length < configValues.maxImageFiles && (
+          <div className="relative w-12 h-full flex items-center justify-center">
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              hidden
+            />
+
+            <div
+              className="bg-dark_3 rounded-full overflow-hidden cursor-pointer hover:bg-light_3"
+              onClick={hanldeAddImage}
+            >
+              <GoPlus className="size-7 m-2.5" />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   );
@@ -145,19 +141,21 @@ const ImageQueueItem = ({ index }: ImageQueueItemProps) => {
     currentIndex,
     setCurrentIndex,
     arrImgPreCropData,
+    setDialog,
   } = useCreateNewPost();
 
   const handleRemoveImage = () => {
-    if (!imageFiles) return;
-    if (currentIndex === imageFiles.length - 1)
-      setCurrentIndex((prev) => Math.max(0, prev - 1));
-    if (imageFiles.length === 1) {
-      setState("se");
-      setImageFiles(undefined);
-    } else
-      setImageFiles((prev) => {
-        return prev!.toSpliced(currentIndex, 1);
-      });
+    if (imageFiles) {
+      if (currentIndex === imageFiles.length - 1)
+        setCurrentIndex((prev) => Math.max(0, prev - 1));
+      if (imageFiles.length === 1) {
+        setState("se");
+        setImageFiles(undefined);
+      } else
+        setImageFiles((prev) => {
+          return prev!.toSpliced(currentIndex, 1);
+        });
+    }
   };
 
   if (!arrImgPreCropData) return;
@@ -174,7 +172,18 @@ const ImageQueueItem = ({ index }: ImageQueueItemProps) => {
             />
             <div
               className="absolute top-[3px] right-[3px] p-[3px] rounded-full bg-neutral-800/75 cursor-pointer"
-              onClick={handleRemoveImage}
+              onClick={() =>
+                setDialog({
+                  title: "Discard photo?",
+                  message: "This will remove the photo from your post.",
+                  acceptText: "Discard",
+                  handleAccept: () => {
+                    handleRemoveImage();
+                    setDialog(undefined);
+                  },
+                  handleCancel: () => setDialog(undefined),
+                })
+              }
             >
               <IoClose className="size-3" />
             </div>

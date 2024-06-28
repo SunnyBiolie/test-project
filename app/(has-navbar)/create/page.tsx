@@ -1,14 +1,11 @@
 "use client";
 
-import { uploadImage } from "@/action/upload-image-2";
-import { CreateNewPost } from "@/components/image-uploader/create-new-post";
-import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { CreatePostContainer } from "@/components/create-new-post/create-post-container";
 
 const CreatePage = () => {
   return (
     <div className="h-full flex items-center justify-center overflow-auto">
-      <CreateNewPost />
+      <CreatePostContainer />
     </div>
   );
 };

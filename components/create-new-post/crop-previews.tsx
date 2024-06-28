@@ -5,9 +5,8 @@ import { ButtonChangeImage } from "./btn-change-image";
 import { useCreateNewPost } from "@/hooks/use-create-new-post";
 import { Loading } from "../loading";
 
-export const ImageUploadPreview = () => {
+export const CropPreviews = () => {
   const {
-    imageFiles,
     arrImgPreCropData,
     currentIndex,
     setCurrentIndex,
@@ -15,31 +14,12 @@ export const ImageUploadPreview = () => {
     aspectRatio,
   } = useCreateNewPost();
 
-  // useEffect(() => {
-  //   const target = cropContainerRef.current;
-  //   if (target) {
-  //     if (target.classList.contains("animate-fade-in")) {
-  //       target.classList.remove("animate-fade-in");
-  //       void target.offsetHeight;
-  //     }
-
-  //     target.classList.add("animate-fade-in");
-  //     target.addEventListener(
-  //       "animationend",
-  //       () => {
-  //         target.classList.remove("animate-fade-in");
-  //       },
-  //       { once: true }
-  //     );
-  //   }
-  // }, [currentIndex]);
-
-  if (!imageFiles || !arrImgPreCropData) return;
+  if (!arrImgPreCropData) return;
 
   const currImgPreCropData = arrImgPreCropData[currentIndex];
 
   return (
-    <div className="relative size-[475px] shrink-0 flex items-center justify-center bg-slate-950/40 overflow-hidden">
+    <div className="relative size-[475px] shrink-0 flex items-center justify-center bg-slate-950/50 overflow-hidden">
       <div
         className={cn(
           "relative transition-all duration-300 ease-out",
@@ -61,8 +41,14 @@ export const ImageUploadPreview = () => {
                   (1 - currImgPreCropData.perCropSize[1])) *
                 100
               }%`,
+              backgroundSize: `${
+                currImgPreCropData.perCropSize[0] !== 1 &&
+                currImgPreCropData.perCropSize[1] !== 1
+                  ? (1 / currImgPreCropData.perCropSize[0]) * 100 + "%"
+                  : "cover"
+              }`,
             }}
-            className="size-full bg-cover bg-no-repeat"
+            className="size-full bg-no-repeat"
           />
         ) : (
           <Loading />
@@ -83,7 +69,6 @@ export const ImageUploadPreview = () => {
           </div>
         </>
       )}
-      {/* <div className="absolute top-0 left-0 size-full bg-sky-500/50"></div> */}
       {currentIndex > 0 && (
         <ButtonChangeImage action="prev" setCurrentIndex={setCurrentIndex} />
       )}

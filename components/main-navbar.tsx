@@ -153,7 +153,13 @@ export const MainNavBar = ({ className }: MainNavBarProps) => {
                 : "group-hover:size-full lg:group-hover:size-9"
             )}
           >
-            <Image src="" alt="" className="object-cover" fill sizes="auto" />
+            <Image
+              src="https://telegraph-image-bak.pages.dev/file/32a611706725087d0baf4.jpg"
+              alt=""
+              className="object-cover"
+              fill
+              sizes="auto"
+            />
           </div>
           <div className="font-semibold hidden lg:block">Profile</div>
         </Link>
