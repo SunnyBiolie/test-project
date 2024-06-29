@@ -13,26 +13,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id String @id @default(cuid())
-  name String
-
-  posts Post[]
-}
-
 model Post {
   id String @id @default(cuid())
-  imageUrl String
-  title String?
-  description String?
-
   authorId String
-  author User @relation(fields: [authorId], references: [id])
+  caption String?
+  hideLikeCounts Boolean
+  turnOffCmt Boolean
 
-  categories Category[]
+  listImage Image[]
 }
 
-model Category {
-  id Int @id @default(autoincrement())
-  posts Post[]
+model Image {
+  id String @unique
+  url String
+
+  postId String
+  post Post @relation(fields: [postId], references: [id])
 }

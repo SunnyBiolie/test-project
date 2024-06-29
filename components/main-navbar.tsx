@@ -20,6 +20,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { NavItem } from "./nav-item";
+import { useUser } from "@clerk/nextjs";
 
 interface MainNavBarProps {
   className?: string;
@@ -34,6 +35,8 @@ interface NavItem {
 }
 
 export const MainNavBar = ({ className }: MainNavBarProps) => {
+  const { user } = useUser();
+
   const pathname = usePathname();
 
   const navbarItem: NavItem[] = [
@@ -93,6 +96,8 @@ export const MainNavBar = ({ className }: MainNavBarProps) => {
     setIsInProfile(pathname === "/profile");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
+
+  if (!user) return;
 
   return (
     <div
@@ -154,7 +159,11 @@ export const MainNavBar = ({ className }: MainNavBarProps) => {
             )}
           >
             <Image
-              src="https://telegraph-image-bak.pages.dev/file/32a611706725087d0baf4.jpg"
+              src={
+                user
+                  ? user.imageUrl
+                  : "https://telegraph-image-bak.pages.dev/file/32a611706725087d0baf4.jpg"
+              }
               alt=""
               className="object-cover"
               fill

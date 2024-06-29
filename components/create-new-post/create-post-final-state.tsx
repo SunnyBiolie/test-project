@@ -8,6 +8,9 @@ import { FinalPreviews } from "./final-previews";
 import { HiArrowLeft } from "react-icons/hi";
 import { IoIosArrowUp } from "react-icons/io";
 import { ToggleButton } from "../toggle-button";
+import { createPost } from "@/action/create-post";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const maxCaptionLength = 800;
 type PostSettings = {
@@ -16,6 +19,8 @@ type PostSettings = {
 };
 
 export const CreatePostFinalState = () => {
+  const router = useRouter();
+
   const { setState, arrCroppedImgData, setArrCroppedImgData, setDialog } =
     useCreateNewPost();
 
@@ -26,6 +31,8 @@ export const CreatePostFinalState = () => {
     hideLikeCounts: false,
     turnOffCmt: false,
   });
+
+  const [isSharing, setIsSharing] = useState(false);
 
   const handleBack = () => {
     setDialog({
@@ -48,13 +55,36 @@ export const CreatePostFinalState = () => {
   };
 
   const handleSharePost = async () => {
-    return;
-    // let datas: Uint8Array[] = [];
-    // arrCroppedImgData.forEach((item) => {
-    //   datas.push(item.bytes);
-    // });
-    // const res = await uploadImages(datas);
-    // console.log(res);
+    if (!arrCroppedImgData) return;
+
+    setDialog({
+      title: "Share this post?",
+      message: "If you leave, your changes won't be saved.",
+      acceptText: "Share it!",
+      handleAccept: async () => {
+        setIsSharing(true);
+
+        let datas: Uint8Array[] = [];
+        arrCroppedImgData.forEach((item) => {
+          datas.push(item.bytes);
+        });
+        const res = await createPost(
+          datas,
+          caption,
+          postSettings.hideLikeCounts,
+          postSettings.turnOffCmt
+        );
+        toast[res.type](res.message);
+        setDialog(undefined);
+
+        if (res.type === "success") {
+          router.push("/");
+        } else if (res.type === "error") {
+          router.refresh();
+        }
+      },
+      handleCancel: () => setDialog(undefined),
+    });
   };
 
   return (

@@ -10,6 +10,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "scontent.fsgn22-1.fna.fbcdn.net",
       },
+      {
+        protocol: "https",
+        hostname: "img.clerk.com",
+      },
     ],
   },
   experimental: {
