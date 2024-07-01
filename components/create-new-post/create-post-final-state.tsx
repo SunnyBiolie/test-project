@@ -57,30 +57,34 @@ export const CreatePostFinalState = () => {
   const handleSharePost = async () => {
     if (!arrCroppedImgData) return;
 
+    let type: string;
+
     setDialog({
       title: "Share this post?",
-      message: "If you leave, your changes won't be saved.",
-      acceptText: "Share it!",
-      handleAccept: async () => {
-        setIsSharing(true);
-
-        let datas: Uint8Array[] = [];
+      message: "This post will be shared with everyone.",
+      type: "double-check",
+      acceptText: "Share it",
+      handleAcceptWithLoadingState: async () => {
+        let listImagesData: Uint8Array[] = [];
         arrCroppedImgData.forEach((item) => {
-          datas.push(item.bytes);
+          listImagesData.push(item.bytes);
         });
         const res = await createPost(
-          datas,
+          listImagesData,
           caption,
           postSettings.hideLikeCounts,
           postSettings.turnOffCmt
         );
         toast[res.type](res.message);
+        type = res.type;
+        return type;
+      },
+      handleLoadingDone: () => {
         setDialog(undefined);
 
-        if (res.type === "success") {
+        if (type === "success") {
           router.push("/");
-        } else if (res.type === "error") {
-          router.refresh();
+        } else if (type === "error") {
         }
       },
       handleCancel: () => setDialog(undefined),

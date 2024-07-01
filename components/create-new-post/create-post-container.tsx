@@ -216,8 +216,13 @@ export const CreatePostContainer = () => {
                 <Dialog
                   title={dialog.title}
                   message={dialog.message}
+                  type={dialog.type}
                   acceptText={dialog.acceptText}
                   handleAccept={dialog.handleAccept}
+                  handleAcceptWithLoadingState={
+                    dialog.handleAcceptWithLoadingState
+                  }
+                  handleLoadingDone={dialog.handleLoadingDone}
                   handleCancel={dialog.handleCancel}
                 />
               )}

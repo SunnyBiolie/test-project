@@ -67,6 +67,11 @@ export const createPost = async (
   //     message: "Cannot find the user!",
   //   };
   // }
+
+  await new Promise((r) => {
+    setTimeout(r, 2000);
+  });
+
   return {
     type: "error",
     message: "Return Value",

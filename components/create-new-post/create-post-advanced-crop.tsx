@@ -322,7 +322,7 @@ export const CreatePostAdvancedCrop = () => {
         rightBtn="Done"
         handleRightBtn={handleSaveChange}
       />
-      <div className="relative w-[760px] h-[475px] flex items-center justify-center bg-neutral-950/50 px-1">
+      <div className="relative w-[800px] h-[500px] flex items-center justify-center bg-neutral-950/50 px-1">
         <div
           ref={imgContainerRef}
           className={cn(

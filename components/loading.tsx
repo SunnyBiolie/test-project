@@ -1,10 +1,17 @@
+"use client";
+
+import { cn } from "@/lib/utils";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { TbLoader } from "react-icons/tb";
 
-export const Loading = () => {
+interface LoadingProps {
+  className?: string;
+}
+
+export const Loading = ({ className }: LoadingProps) => {
   return (
     <div className="size-full flex items-center justify-center">
-      <TbLoader className="size-6 animate-spin" />
+      <TbLoader className={cn("size-6 animate-spin", className)} />
     </div>
   );
 };

@@ -17,6 +17,7 @@ model Post {
   id String @id @default(cuid())
   authorId String
   caption String?
+  // likes Int
   hideLikeCounts Boolean
   turnOffCmt Boolean
 
@@ -30,3 +31,15 @@ model Image {
   postId String
   post Post @relation(fields: [postId], references: [id])
 }
+
+// model Comment {
+//   userId String
+//   postId String
+  
+//   content String
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@id([userId, postId])
+// }

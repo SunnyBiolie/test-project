@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { LuRectangleHorizontal, LuRectangleVertical } from "react-icons/lu";
 import { useCreateNewPost } from "@/hooks/use-create-new-post";
 import { ImageQueue } from "./image-queue";
 import { AspectRatio } from "@/types/create-post-types";
 import { defaultPercSizeAndPos } from "./utils";
+import { configValues } from "./create-post-container";
 import { CiCrop } from "react-icons/ci";
+import { LuRectangleHorizontal, LuRectangleVertical } from "react-icons/lu";
 
 const vertical: AspectRatio[] = [0.5625, 0.6666666666666667, 0.75, 0.8, 1];
 const verticalDisplay = ["9:16", "2:3", "3:4", "4:5", "1:1"];
@@ -76,7 +77,7 @@ export const CropParameters = () => {
   };
 
   return (
-    <div className="flex-1 w-[285px] bg-dark_2 p-4 text-sm font-medium space-y-3 overflow-hidden">
+    <div className="flex-1 w-[325px] bg-dark_2 p-4 text-sm font-medium space-y-3 overflow-hidden">
       <section className="space-y-1.5">
         <p>Direction</p>
         <div className="w-fit bg-dark_3 p-1 rounded-md flex items-center gap-x-1">
@@ -133,7 +134,9 @@ export const CropParameters = () => {
         </div>
       </section>
       <section className="space-y-1.5">
-        <p>Photos</p>
+        <p>
+          Photos ({arrImgPreCropData.length}/{configValues.maxImageFiles})
+        </p>
         <ImageQueue />
       </section>
       <section className="space-y-1.5">
